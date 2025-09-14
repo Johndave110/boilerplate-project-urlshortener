@@ -28,12 +28,19 @@ app.post("/api/shorturl", (req, res) => {
   let originalUrl = req.body.url;
 
   try {
+    // Validate the URL
     let urlObj = new URL(originalUrl);
-    urls[id] = originalUrl;
 
+    // Must begin with http:// or https://
+    if (urlObj.protocol !== "http:" && urlObj.protocol !== "https:") {
+      return res.json({ error: "invalid url" });
+    }
+
+    urls[id] = originalUrl;
     res.json({ original_url: originalUrl, short_url: id });
     id++;
   } catch (err) {
+    // Invalid URL (e.g. "abc123")
     res.json({ error: "invalid url" });
   }
 });
